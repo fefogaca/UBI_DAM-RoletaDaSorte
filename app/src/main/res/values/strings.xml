@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Roleta da Sorte</string>
+    <string name="adicionar_opcao">Adicionar Opção</string>
+    <string name="digite_opcao">Digite uma opção</string>
+    <string name="girar_roleta">GIRAR ROLETA</string>
+    <string name="limpar_tudo">Limpar Tudo</string>
+    <string name="minhas_opcoes">Minhas Opções</string>
+    <string name="remover">Remover</string>
+</resources>
