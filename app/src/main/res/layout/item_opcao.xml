@@ -44,7 +44,7 @@
             android:src="@android:drawable/ic_menu_delete"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Remover"
-            android:tint="#F44336"/>
+            app:tint="#F44336"/>
 
     </LinearLayout>
 

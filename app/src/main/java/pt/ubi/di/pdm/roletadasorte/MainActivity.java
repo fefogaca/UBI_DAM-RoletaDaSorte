@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,10 +25,10 @@ public class MainActivity extends AppCompatActivity {
     private Button btnAdicionar;
     private Button btnGirar;
     private Button btnLimpar;
-    private TextView textOpcaoAtual;
     private TextView textResultado;
     private TextView textContador;
-    private View roletaCirculo;
+    private RoletaView roletaView; // Usando a nova RoletaView
+    private ImageView imageSeta;
     private RecyclerView recyclerOpcoes;
 
     private List<Opcao> listaOpcoes;
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         inicializarComponentes();
         configurarRecyclerView();
         configurarListeners();
+
+        roletaView.setRotation(0f);
     }
 
     private void inicializarComponentes() {
@@ -50,28 +53,31 @@ public class MainActivity extends AppCompatActivity {
         btnAdicionar = findViewById(R.id.btnAdicionar);
         btnGirar = findViewById(R.id.btnGirar);
         btnLimpar = findViewById(R.id.btnLimpar);
-        textOpcaoAtual = findViewById(R.id.textOpcaoAtual);
         textResultado = findViewById(R.id.textResultado);
         textContador = findViewById(R.id.textContador);
-        roletaCirculo = findViewById(R.id.roletaCirculo);
+        roletaView = findViewById(R.id.roletaView); // Inicializando a RoletaView
+        imageSeta = findViewById(R.id.imageSeta);
         recyclerOpcoes = findViewById(R.id.recyclerOpcoes);
 
         listaOpcoes = new ArrayList<>();
     }
 
     private void configurarRecyclerView() {
+        // Configura o RecyclerView, que é a lista rolável de opções
         adapter = new OpcoesAdapter(listaOpcoes, position -> removerOpcao(position));
         recyclerOpcoes.setLayoutManager(new LinearLayoutManager(this));
         recyclerOpcoes.setAdapter(adapter);
     }
 
     private void configurarListeners() {
+        // Define as ações que acontecem quando o usuário clica nos botões
         btnAdicionar.setOnClickListener(v -> adicionarOpcao());
 
         btnGirar.setOnClickListener(v -> girarRoleta());
 
         btnLimpar.setOnClickListener(v -> limparTodasOpcoes());
 
+        // Permite que o usuário adicione uma opção pressionando "Enter" no teclado
         inputOpcao.setOnEditorActionListener((v, actionId, event) -> {
             adicionarOpcao();
             return true;
@@ -83,6 +89,16 @@ public class MainActivity extends AppCompatActivity {
 
         if (texto.isEmpty()) {
             Toast.makeText(this, "Digite uma opção primeiro!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (texto.length() > 20) {
+            Toast.makeText(this, "A opção deve ter no máximo 20 caracteres!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (listaOpcoes.size() >= 10) {
+            Toast.makeText(this, "A roleta pode ter no máximo 10 opções!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -126,78 +142,80 @@ public class MainActivity extends AppCompatActivity {
 
     private void girarRoleta() {
         if (girando) {
-            return;
+            return; // Se já estiver girando, não faz nada
         }
 
-        if (listaOpcoes.isEmpty()) {
-            Toast.makeText(this, "Adicione opções primeiro!", Toast.LENGTH_SHORT).show();
+        if (listaOpcoes.size() < 2) {
+            Toast.makeText(this, "Adicione pelo menos duas opções para girar!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         girando = true;
+        // Desabilitar botões para evitar cliques durante a animação
         btnGirar.setEnabled(false);
         btnAdicionar.setEnabled(false);
+        btnLimpar.setEnabled(false);
         textResultado.setVisibility(View.GONE);
 
-        // Animação da roleta
+        // Sorteia o índice da opção vencedora ANTES da animação começar
         Random random = new Random();
-        int rotacoesCompletas = 5 + random.nextInt(3); // 5 a 7 rotações
-        float grausFinais = rotacoesCompletas * 360f + random.nextInt(360);
+        int indexVencedor = random.nextInt(listaOpcoes.size());
+        Opcao vencedora = listaOpcoes.get(indexVencedor);
 
-        ObjectAnimator animator = ObjectAnimator.ofFloat(roletaCirculo, "rotation", 0f, grausFinais);
-        animator.setDuration(3000);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        // Calcula o ângulo final da roleta. A roleta é dividida em fatias iguais.
+        float anguloPorOpcao = 360f / listaOpcoes.size();
+        // O ângulo de destino é o centro da fatia vencedora.
+        // O objetivo é que este ângulo pare no topo (270 graus).
+        float anguloDestino = 270 - ((indexVencedor * anguloPorOpcao) + (anguloPorOpcao / 2));
 
-        // Animação do texto durante o giro
-        Thread atualizadorTexto = new Thread(() -> {
-            try {
-                for (int i = 0; i < 30; i++) {
-                    int indexAleatorio = random.nextInt(listaOpcoes.size());
-                    String opcaoAtual = listaOpcoes.get(indexAleatorio).getTexto();
+        // Adiciona várias rotações completas para um efeito mais dramático
+        int rotacoesCompletas = 5 + random.nextInt(5); // Entre 5 e 9 rotações
+        float grausFinais = (rotacoesCompletas * 360f) + anguloDestino;
 
-                    runOnUiThread(() -> textOpcaoAtual.setText(opcaoAtual));
-                    Thread.sleep(100);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-
-        atualizadorTexto.start();
+        // Animação da roleta
+        ObjectAnimator animator = ObjectAnimator.ofFloat(roletaView, "rotation", 0f, grausFinais);
+        animator.setDuration(4000); // Duração da animação em milissegundos
+        animator.setInterpolator(new AccelerateDecelerateInterpolator()); // Acelera e desacelera suavemente
 
         animator.addListener(new android.animation.AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(android.animation.Animator animation) {
-                // Selecionar vencedor
-                int indexVencedor = random.nextInt(listaOpcoes.size());
-                Opcao vencedora = listaOpcoes.get(indexVencedor);
-
-                textOpcaoAtual.setText(vencedora.getTexto());
-                textResultado.setText("🎉 Resultado: " + vencedora.getTexto() + " 🎉");
+                // Exibe o resultado final
+                textResultado.setText("🎉 " + vencedora.getTexto() + " 🎉");
                 textResultado.setVisibility(View.VISIBLE);
 
+                // Reabilita os botões
                 girando = false;
                 btnGirar.setEnabled(true);
                 btnAdicionar.setEnabled(true);
+                btnLimpar.setEnabled(true);
 
-                // Resetar rotação para próximo giro
-                roletaCirculo.setRotation(0f);
+                // Mantém a roleta na posição final para o usuário ver o resultado
             }
         });
 
+        // Inicia a animação
+        roletaView.setRotation(0f); // Reseta a posição da roleta antes de começar a girar
         animator.start();
     }
 
     private void atualizarInterface() {
         int total = listaOpcoes.size();
-        textContador.setText(total + " opção" + (total != 1 ? "ões" : "") + " adicionada" + (total != 1 ? "s" : ""));
+        String textoContador;
+        if (total == 0) {
+            textoContador = "Nenhuma opção adicionada";
+        } else if (total == 1) {
+            textoContador = "1 opção adicionada";
+        } else {
+            textoContador = total + " opções adicionadas";
+        }
+        textContador.setText(textoContador);
+        roletaView.setOpcoes(listaOpcoes); // Atualiza a RoletaView
 
-        if (total > 0) {
+        if (total > 1) {
             btnGirar.setEnabled(true);
-            textOpcaoAtual.setText("Pronto para girar!");
         } else {
             btnGirar.setEnabled(false);
-            textOpcaoAtual.setText("Adicione opções");
         }
     }
 }

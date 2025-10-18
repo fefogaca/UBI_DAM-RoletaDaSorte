@@ -11,6 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+/**
+ * Adapter para o RecyclerView que exibe a lista de opções.
+ * Ele gerencia como os dados (as opções) são apresentados na lista e lida com as interações,
+ * como o clique no botão de remover.
+ */
 public class OpcoesAdapter extends RecyclerView.Adapter<OpcoesAdapter.OpcaoViewHolder> {
 
     private List<Opcao> opcoes;
