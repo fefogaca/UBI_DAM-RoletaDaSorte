@@ -2,7 +2,16 @@
 
 Roleta da Sorte é um aplicativo Android simples e divertido que permite criar uma roleta personalizada com suas próprias opções. Adicione as opções que desejar, gire a roleta e veja qual delas será a escolhida!
 
-## Funcionalidades
+## Novas Funcionalidades (v2.0)
+
+Esta versão traz melhorias significativas na experiência do usuário e na persistência de dados:
+
+*   **Persistência do Nome do Usuário**: O nome do usuário agora é salvo localmente usando `SharedPreferences`, garantindo que a informação não seja perdida mesmo após o aplicativo ser fechado ou o dispositivo ser reiniciado.
+*   **Tela de Boas-Vindas Aprimorada**: Uma nova tela de splash foi implementada para gerenciar o fluxo inicial do aplicativo. Ela verifica a existência de um nome de usuário salvo, direcionando o usuário para a tela de entrada de nome se necessário, ou diretamente para a tela de boas-vindas se o nome já estiver registrado.
+*   **Opção de Alterar Nome**: Na tela de boas-vindas, o usuário agora tem a opção de alterar seu nome, limpando o nome salvo e permitindo uma nova entrada.
+*   **Ícone da Aplicação na Tela de Boas-Vindas**: O ícone da aplicação foi adicionado à tela de boas-vindas para uma melhor identidade visual.
+
+## Funcionalidades Existentes
 
 *   Adicione até 10 opções personalizadas à roleta.
 *   Limite de 20 caracteres por opção.
@@ -27,6 +36,7 @@ Para executar este projeto no Android Studio, siga os seguintes passos:
 
 3.  **Sincronize o Gradle:**
     *   O Android Studio deve sincronizar o projeto com os arquivos Gradle automaticamente. Se não o fizer, clique em "File" > "Sync Project with Gradle Files".
+    *   Certifique-se de que você tem uma versão compatível do Gradle e do Android SDK configurada. O projeto utiliza o Gradle Wrapper, então ele deve baixar a versão correta automaticamente.
 
 4.  **Execute o Aplicativo:**
     *   Conecte um dispositivo Android ou inicie um emulador.

@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="#F5F5F5">
+    android:background="@color/background"
+    android:fitsSystemWindows="true">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +22,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="🎰 Roleta da Sorte"
+            android:text="@string/app_name_full"
             android:textSize="32sp"
             android:textStyle="bold"
             android:textColor="#FF6B35"
@@ -41,7 +46,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Adicionar Opção"
+                    android:text="@string/adicionar_opcao"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#333333"
@@ -50,7 +55,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Digite uma opção"
+                    android:hint="@string/digite_opcao"
                     app:boxBackgroundMode="outline"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
@@ -70,7 +75,7 @@
                     android:id="@+id/btnAdicionar"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:text="➕ Adicionar"
+                    android:text="@string/adicionar_button"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:backgroundTint="#4CAF50"
@@ -118,6 +123,7 @@
                         android:layout_height="40dp"
                         android:rotation="180"
                         android:src="@drawable/seta_indicador"
+                        android:contentDescription="@string/roulette_indicator_description"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -129,7 +135,7 @@
                     android:id="@+id/textResultado"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:text="@string/empty_string"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#FF6B35"
@@ -141,7 +147,7 @@
                     android:id="@+id/btnGirar"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
-                    android:text="🎲 GIRAR ROLETA"
+                    android:text="@string/girar_roleta"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:backgroundTint="#FF6B35"
@@ -175,7 +181,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Minhas Opções"
+                        android:text="@string/minhas_opcoes"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="#333333"/>
@@ -184,7 +190,7 @@
                         android:id="@+id/btnLimpar"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
-                        android:text="🗑️ Limpar Tudo"
+                        android:text="@string/limpar_tudo"
                         android:textSize="12sp"
                         android:backgroundTint="#F44336"
                         android:paddingStart="12dp"
@@ -196,7 +202,7 @@
                     android:id="@+id/textContador"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="0 opções adicionadas"
+                    android:text="@string/zero_opcoes_adicionadas"
                     android:textSize="14sp"
                     android:textColor="#666666"
                     android:layout_marginTop="4dp"
@@ -215,3 +221,5 @@
     </LinearLayout>
 
 </ScrollView>
+
+</RelativeLayout>

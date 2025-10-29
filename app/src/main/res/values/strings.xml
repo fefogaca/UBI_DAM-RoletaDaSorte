@@ -1,9 +1,25 @@
 <resources>
     <string name="app_name">Roleta da Sorte</string>
+    <string name="app_name_full">🎰 Roleta da Sorte</string>
     <string name="adicionar_opcao">Adicionar Opção</string>
     <string name="digite_opcao">Digite uma opção</string>
-    <string name="girar_roleta">GIRAR ROLETA</string>
-    <string name="limpar_tudo">Limpar Tudo</string>
+    <string name="girar_roleta">🎲 GIRAR ROLETA</string>
+    <string name="limpar_tudo">🗑️ Limpar Tudo</string>
     <string name="minhas_opcoes">Minhas Opções</string>
-    <string name="remover">Remover</string>
+    <string name="adicionar_button">➕ Adicionar</string>
+    <string name="roulette_indicator_description">Indicador da roleta</string>
+    <string name="empty_string"></string>
+    <string name="zero_opcoes_adicionadas">0 opções adicionadas</string>
+    <string name="one_opcao_adicionada">1 opção adicionada</string>
+    <string name="n_opcoes_adicionadas">%d opções adicionadas</string>
+    <string name="what_is_your_name">Qual é o seu nome?</string>
+    <string name="enter_your_name">Digite seu nome</string>
+    <string name="save">Salvar</string>
+    <string name="hello_user">Olá, %1$s!</string>
+    <string name="play_game">Jogar agora!</string>
+    <string name="change_name">Trocar de Nome</string>
+    <string name="option_placeholder">Opção</string>
+    <string name="remove_option_description">Remover opção</string>
+    <string name="roulette_result">🎉 %1$s 🎉</string>
+    <string name="marca_dagua">Desenvolvido por Felipe Fogaça</string>
 </resources>

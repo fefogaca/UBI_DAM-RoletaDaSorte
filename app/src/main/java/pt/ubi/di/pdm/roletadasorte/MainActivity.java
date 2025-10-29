@@ -21,33 +21,38 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextInputEditText inputOpcao;
-    private Button btnAdicionar;
-    private Button btnGirar;
-    private Button btnLimpar;
-    private TextView textResultado;
-    private TextView textContador;
-    private RoletaView roletaView; // Usando a nova RoletaView
-    private ImageView imageSeta;
-    private RecyclerView recyclerOpcoes;
+    // Declaração dos componentes da interface do usuário
+    private TextInputEditText inputOpcao; // Campo para inserir uma nova opção
+    private Button btnAdicionar; // Botão para adicionar a opção
+    private Button btnGirar; // Botão para girar a roleta
+    private Button btnLimpar; // Botão para limpar todas as opções
+    private TextView textResultado; // Texto para exibir o resultado do sorteio
+    private TextView textContador; // Texto para exibir o número de opções adicionadas
+    private RoletaView roletaView; // A view customizada da roleta
+    private ImageView imageSeta; // A seta que indica a opção sorteada
+    private RecyclerView recyclerOpcoes; // A lista de opções adicionadas
 
-    private List<Opcao> listaOpcoes;
-    private OpcoesAdapter adapter;
-    private int contadorOpcoes = 0;
-    private boolean girando = false;
+    // Variáveis para controlar o estado da roleta
+    private List<Opcao> listaOpcoes; // A lista de objetos Opcao
+    private OpcoesAdapter adapter; // O adaptador para o RecyclerView
+    private int contadorOpcoes = 0; // Contador para o número de opções
+    private boolean girando = false; // Flag para indicar se a roleta está girando
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Inicializa os componentes da UI e configura os listeners
         inicializarComponentes();
         configurarRecyclerView();
         configurarListeners();
 
+        // Define a rotação inicial da roleta como 0
         roletaView.setRotation(0f);
     }
 
+    // Método para associar as variáveis aos componentes do layout
     private void inicializarComponentes() {
         inputOpcao = findViewById(R.id.inputOpcao);
         btnAdicionar = findViewById(R.id.btnAdicionar);
@@ -62,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         listaOpcoes = new ArrayList<>();
     }
 
+    // Método para configurar o RecyclerView que exibe a lista de opções
     private void configurarRecyclerView() {
         // Configura o RecyclerView, que é a lista rolável de opções
         adapter = new OpcoesAdapter(listaOpcoes, position -> removerOpcao(position));
@@ -69,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerOpcoes.setAdapter(adapter);
     }
 
+    // Método para configurar os listeners de clique dos botões
     private void configurarListeners() {
         // Define as ações que acontecem quando o usuário clica nos botões
         btnAdicionar.setOnClickListener(v -> adicionarOpcao());
@@ -84,9 +91,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // Método para adicionar uma nova opção à roleta
     private void adicionarOpcao() {
         String texto = inputOpcao.getText().toString().trim();
 
+        // Validações da entrada do usuário
         if (texto.isEmpty()) {
             Toast.makeText(this, "Digite uma opção primeiro!", Toast.LENGTH_SHORT).show();
             return;
@@ -102,19 +111,23 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        // Adiciona a nova opção à lista
         contadorOpcoes++;
         Opcao novaOpcao = new Opcao(texto, contadorOpcoes);
         listaOpcoes.add(novaOpcao);
 
+        // Notifica o adapter sobre a nova opção e atualiza a UI
         adapter.notifyItemInserted(listaOpcoes.size() - 1);
         atualizarInterface();
 
+        // Limpa o campo de entrada e solicita o foco
         inputOpcao.setText("");
         inputOpcao.requestFocus();
 
         Toast.makeText(this, "Opção adicionada!", Toast.LENGTH_SHORT).show();
     }
 
+    // Método para remover uma opção da roleta
     private void removerOpcao(int position) {
         if (position >= 0 && position < listaOpcoes.size()) {
             listaOpcoes.remove(position);
@@ -125,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Método para limpar todas as opções da roleta
     private void limparTodasOpcoes() {
         if (listaOpcoes.isEmpty()) {
             Toast.makeText(this, "Não há opções para limpar!", Toast.LENGTH_SHORT).show();
@@ -140,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Todas as opções foram removidas!", Toast.LENGTH_SHORT).show();
     }
 
+    // Método para girar a roleta
     private void girarRoleta() {
         if (girando) {
             return; // Se já estiver girando, não faz nada
@@ -151,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         girando = true;
-        // Desabilitar botões para evitar cliques durante a animação
+        // Desabilita os botões para evitar cliques durante a animação
         btnGirar.setEnabled(false);
         btnAdicionar.setEnabled(false);
         btnLimpar.setEnabled(false);
@@ -181,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(android.animation.Animator animation) {
                 // Exibe o resultado final
-                textResultado.setText("🎉 " + vencedora.getTexto() + " 🎉");
+                textResultado.setText(getString(R.string.roulette_result, vencedora.getTexto()));
                 textResultado.setVisibility(View.VISIBLE);
 
                 // Reabilita os botões
@@ -199,19 +214,21 @@ public class MainActivity extends AppCompatActivity {
         animator.start();
     }
 
+    // Método para atualizar a interface do usuário com base no número de opções
     private void atualizarInterface() {
         int total = listaOpcoes.size();
         String textoContador;
         if (total == 0) {
-            textoContador = "Nenhuma opção adicionada";
+            textoContador = getString(R.string.zero_opcoes_adicionadas);
         } else if (total == 1) {
-            textoContador = "1 opção adicionada";
+            textoContador = getString(R.string.one_opcao_adicionada);
         } else {
-            textoContador = total + " opções adicionadas";
+            textoContador = getString(R.string.n_opcoes_adicionadas, total);
         }
         textContador.setText(textoContador);
         roletaView.setOpcoes(listaOpcoes); // Atualiza a RoletaView
 
+        // Habilita ou desabilita o botão de girar
         if (total > 1) {
             btnGirar.setEnabled(true);
         } else {
