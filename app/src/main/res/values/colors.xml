@@ -8,4 +8,5 @@
     <color name="background">#F5F5F5</color>
     <color name="text_primary">#333333</color>
     <color name="text_secondary">#666666</color>
+    <color name="red_delete">#F44336</color>
 </resources>

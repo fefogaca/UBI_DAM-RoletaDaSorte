@@ -1,33 +1,25 @@
 package pt.ubi.di.pdm.roletadasorte;
 
-// Classe que representa uma opção na roleta.
-public class Opcao {
-    private String texto; // O texto da opção
-    private int numero; // O número da opção na lista
+import java.io.Serializable;
 
-    // Construtor da classe
-    public Opcao(String texto, int numero) {
+/**
+ * @author Felipe Fogaça
+ * Representa uma única opção de texto na roleta
+ * Esta é uma classe de dados simples que contém apenas o texto da opção
+ * Implementa Serializable para que possa ser passada entre atividades e salva em arquivos
+ */
+public class Opcao implements Serializable {
+    private String texto;
+
+    public Opcao(String texto) {
         this.texto = texto;
-        this.numero = numero;
     }
 
-    // Getter para o texto da opção
     public String getTexto() {
         return texto;
     }
 
-    // Setter para o texto da opção
     public void setTexto(String texto) {
         this.texto = texto;
-    }
-
-    // Getter para o número da opção
-    public int getNumero() {
-        return numero;
-    }
-
-    // Setter para o número da opção
-    public void setNumero(int numero) {
-        this.numero = numero;
     }
 }

@@ -24,6 +24,9 @@
         <activity android:name=".NameActivity" />
         <activity android:name=".WelcomeActivity" />
         <activity android:name=".MainActivity" />
+        <activity
+            android:name=".HistoryActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

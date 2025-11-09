@@ -12,48 +12,47 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+/**
+ * @author Felipe Fogaça
+ * Uma View customizada que desenha uma roleta com base em uma lista de opções
+ * A roleta é dividida em fatias coloridas, cada uma representando uma opção
+ */
 public class RoletaView extends View {
 
-    // Declaração das variáveis de desenho
-    private List<Opcao> opcoes = new ArrayList<>(); // A lista de opções a serem desenhadas na roleta
-    private Paint paintCirculo; // Paint para desenhar as fatias coloridas da roleta
-    private Paint paintTexto; // Paint para desenhar o texto das opções
-    private Paint paintLinha; // Paint para desenhar as linhas separadoras
-    private RectF rectF; // Retângulo usado para desenhar as fatias (arcos)
-    private List<Integer> cores; // Lista de cores para as fatias da roleta
+    // Desenho
+    private List<Opcao> opcoes = new ArrayList<>();
+    private Paint paintCirculo;
+    private Paint paintTexto;
+    private Paint paintLinha;
+    private RectF rectF;
+    private List<Integer> cores;
 
-    // Construtor da View
     public RoletaView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(); // Inicializa os objetos de desenho
+        init();
     }
 
-    // Método de inicialização
     private void init() {
-        // Configuração do Paint para as fatias da roleta
         paintCirculo = new Paint();
-        paintCirculo.setAntiAlias(true); // Suaviza as bordas
-        paintCirculo.setStyle(Paint.Style.FILL); // Preenche as formas
+        paintCirculo.setAntiAlias(true);
+        paintCirculo.setStyle(Paint.Style.FILL);
 
-        // Configuração do Paint para o texto
         paintTexto = new Paint();
         paintTexto.setAntiAlias(true);
-        paintTexto.setColor(Color.WHITE); // Cor do texto
-        paintTexto.setTextSize(30); // Tamanho do texto
-        paintTexto.setTextAlign(Paint.Align.CENTER); // Alinhamento do texto
+        paintTexto.setColor(Color.WHITE);
+        paintTexto.setTextSize(30);
+        paintTexto.setTextAlign(Paint.Align.CENTER);
 
-        // Configuração do Paint para as linhas separadoras
         paintLinha = new Paint();
         paintLinha.setAntiAlias(true);
-        paintLinha.setColor(Color.WHITE); // Cor da linha
-        paintLinha.setStrokeWidth(5); // Largura da linha
+        paintLinha.setColor(Color.WHITE);
+        paintLinha.setStrokeWidth(5);
 
-        rectF = new RectF(); // Inicializa o retângulo
+        rectF = new RectF();
 
-        // Paleta de cores para as fatias da roleta
+        // Paleta de cores da roleta
         cores = Arrays.asList(
                 Color.parseColor("#E6194B"), Color.parseColor("#3CB44B"),
                 Color.parseColor("#FFE119"), Color.parseColor("#4363D8"),
@@ -66,25 +65,31 @@ public class RoletaView extends View {
         );
     }
 
-    // Método para definir as opções da roleta e redesenhar a view
+    /**
+     * Define a lista de opções para a roleta e solicita que a view seja redesenhada.
+     * @param opcoes A nova lista de opções.
+     */
     public void setOpcoes(List<Opcao> opcoes) {
         this.opcoes = opcoes;
-        invalidate(); // Força a view a ser redesenhada
+        invalidate(); // Força a chamada do método onDraw() para atualizar a view.
     }
 
-    // Método principal de desenho da view
+    /**
+     * O coração da View. Este método é chamado pelo sistema Android para desenhar o conteúdo.
+     * @param canvas O Canvas no qual o desenho será feito.
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // Se não houver opções, desenha um círculo cinza simples
+        // Se não houver opções, desenha um círculo cinza simples como placeholder.
         if (opcoes == null || opcoes.isEmpty()) {
             paintCirculo.setColor(Color.LTGRAY);
             canvas.drawCircle(getWidth() / 2f, getHeight() / 2f, getWidth() / 2f, paintCirculo);
             return;
         }
 
-        // Ajusta o tamanho do texto com base no número de opções
+        // Ajusta o tamanho do texto dinamicamente para caber nas fatias.
         int numOpcoes = opcoes.size();
         if (numOpcoes <= 4) {
             paintTexto.setTextSize(30);
@@ -94,39 +99,40 @@ public class RoletaView extends View {
             paintTexto.setTextSize(18);
         }
 
-        // Calcula as dimensões da roleta
+        // Calcula as dimensões da roleta com base no tamanho da view.
         float centerX = getWidth() / 2f;
         float centerY = getHeight() / 2f;
         float radius = getWidth() / 2f;
 
+        // Define o retângulo que conterá a roleta.
         rectF.set(0, 0, getWidth(), getHeight());
 
-        // Calcula o ângulo de cada fatia
+        // Calcula o ângulo de cada fatia.
         float anguloPorFatia = 360f / numOpcoes;
         float anguloInicio = 0;
 
-        // Itera sobre as opções para desenhar cada fatia
+        // Itera sobre as opções para desenhar cada fatia da roleta.
         for (int i = 0; i < numOpcoes; i++) {
-            // Define a cor da fatia, ciclando pela lista de cores
+            // Define a cor da fatia, ciclando pela lista de cores se houver mais opções que cores.
             paintCirculo.setColor(cores.get(i % cores.size()));
 
-            // Desenha a fatia como um arco
+            // 1. Desenha a fatia como um arco preenchido.
             canvas.drawArc(rectF, anguloInicio, anguloPorFatia, true, paintCirculo);
 
-            // Calcula a posição do texto no centro da fatia
+            // 2. Calcula a posição do texto no centro da fatia usando trigonometria.
             float anguloTexto = anguloInicio + (anguloPorFatia / 2);
             float x = (float) (centerX + (radius * 0.6) * Math.cos(Math.toRadians(anguloTexto)));
             float y = (float) (centerY + (radius * 0.6) * Math.sin(Math.toRadians(anguloTexto)));
 
-            // Desenha o texto da opção
+            // 3. Desenha o texto da opção, ajustando verticalmente para centralizá-lo.
             canvas.drawText(opcoes.get(i).getTexto(), x, y - ((paintTexto.descent() + paintTexto.ascent()) / 2), paintTexto);
 
-            // Desenha a linha separadora entre as fatias
+            // 4. Desenha a linha separadora entre as fatias.
             float xLinha = (float) (centerX + radius * Math.cos(Math.toRadians(anguloInicio)));
             float yLinha = (float) (centerY + radius * Math.sin(Math.toRadians(anguloInicio)));
             canvas.drawLine(centerX, centerY, xLinha, yLinha, paintLinha);
 
-            // Atualiza o ângulo de início para a próxima fatia
+            // Atualiza o ângulo de início para a próxima fatia.
             anguloInicio += anguloPorFatia;
         }
     }
